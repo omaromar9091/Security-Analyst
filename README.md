@@ -1,7 +1,7 @@
 # Security Analyst Skill
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Framework agnostic](https://img.shields.io/badge/works%20with-Claude%20%7C%20MCP%20%7C%20LangChain%20%7C%20any%20agent-blue)
+![Framework agnostic](https://img.shields.io/badge/framework-agnostic-blue.svg)
 
 A structured cybersecurity analysis skill for any AI model or agent. It gives an agent a methodology instead of just an opinion — six domains, each one grounded in how that work actually gets done in practice, with routing logic that decides which domain applies before any analysis starts.
 
