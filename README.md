@@ -6,7 +6,6 @@
 [![Framework agnostic](https://img.shields.io/badge/framework-agnostic-3E6B89.svg)](SKILL.md)
 [![Domains](https://img.shields.io/badge/domains-6-141C26.svg)](SKILL.md)
 
-*If a badge above doesn't render, your network or browser is blocking `img.shields.io` — a common ad-blocker default, not a problem with the repo. Everything else on this page is unaffected.*
 
 A structured cybersecurity analysis skill for any AI model or agent. It gives an agent a methodology instead of just an opinion — six domains, each one grounded in how that work actually gets done in practice, with routing logic that decides which domain applies before any analysis starts.
 
