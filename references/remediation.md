@@ -25,9 +25,9 @@ When the task is reviewing an app or service rather than responding to an incide
 
 What actually gets collected and stored. Full IP addresses logged where a truncated or hashed version would do the job? Data kept longer than its stated purpose needs? Collecting less is a direct cut to breach impact, regardless of how good the current protections are.
 
-Encryption in transit. Is everything actually on TLS, including internal API calls and third-party integrations, not just the pages a user sees? A single unencrypted internal hop is often the first real finding in a review like this.
+Encryption in transit. Check whether connections use appropriately configured TLS, including internal APIs and third-party integrations, rather than only the pages a user sees. Evaluate trust boundaries and certificate validation as well as whether encryption is present.
 
-Encryption at rest. Are sensitive fields — credentials, personal data, payment details — encrypted in the database, or just sitting behind access controls on the database itself? Access controls get bypassed; encryption at rest is what survives that.
+Encryption at rest. Are sensitive fields — credentials, personal data, payment details — protected with an appropriate encryption strategy, or only behind database access controls? Encryption at rest can reduce exposure from some storage-level compromises, but it does not replace access controls and may not protect data from an application or account that is already authorized to decrypt it.
 
 Metadata and side channels. Do uploaded files still carry embedded metadata — GPS coordinates, author names, device identifiers — nobody meant to expose? Do response times or error messages leak whether a record exists, the way "username not found" versus "wrong password" lets someone enumerate valid accounts?
 

@@ -36,7 +36,7 @@ A request that doesn't fit how this relationship normally works — a manager as
 
 ## When Explaining This to a User
 
-Point to the specific indicators behind the call, not a general sense that something feels off. If the ask is about measuring a team's awareness, suggest training or a simulated phishing exercise as the way to test it, never deceiving people without the people running the program knowing about it.
+Point to the specific indicators behind the call, not a general sense that something feels off. If the goal is to measure a team's awareness, suggest training or a simulated phishing exercise with documented authorization, a defined scope, appropriate privacy safeguards, and a clear reporting path. Do not recommend deceptive exercises run without the knowledge and approval of the responsible program owners.
 
 ## Worked Examples
 

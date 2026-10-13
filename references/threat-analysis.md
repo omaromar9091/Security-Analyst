@@ -1,108 +1,114 @@
-# Threat & Binary Analysis
+# Threat and Binary Analysis
 
-Use this file for analyzing a suspicious file or process, system logs with unusual activity, or pulling together evidence after a breach.
+Use this guide to assess a suspicious file or process, interpret unusual system activity, or organize evidence after a suspected compromise. Treat conclusions as provisional until they are supported by multiple observations where possible.
 
-## Stages of Analyzing a Suspicious File
+## Static Analysis
 
-### Static Analysis
+Start with non-executing checks whenever practical.
 
-Looking at the file without running it.
+- **Hashes and reputation:** Calculate a SHA-256 hash and compare it with approved internal or reputable intelligence sources. A reputation lookup is one signal, not a verdict; a new or modified sample may have no detections. Do not upload confidential, regulated, or otherwise sensitive files to a public scanning service without authorization.
+- **Strings and resources:** Review readable strings, embedded resources, file paths, domains, and error messages. Treat these as leads: strings can be decoys, stale artifacts, or unrelated library content.
+- **File structure:** Inspect headers, sections, signing information, and entropy. Packing or high entropy can be consistent with compression or encryption, but is not proof of malware.
+- **Imports and capabilities:** Review imported functions and metadata for capabilities such as network communication, process manipulation, or persistence. A capability does not prove that the file uses it maliciously.
 
-**Hash and signature**: computing MD5/SHA-256 and checking it against known databases like VirusTotal is a fast first step, but a new or lightly modified file will often slip past known signatures entirely.
+## Dynamic Analysis
 
-**Strings and embedded resources**: pulling the readable text out of a file. IP addresses, domain names, file paths, error messages — these hint at what the file actually does before any deeper work starts.
+Run a suspicious sample only in a disposable, isolated analysis environment controlled by an authorized analyst. Prefer a snapshot that can be reverted. Do not use a normal workstation, production credentials, sensitive shared folders, or unrestricted network access. If network behavior must be observed, use a controlled simulation or tightly monitored lab network with explicit approval.
 
-**File structure**: checking headers (PE headers on Windows) for signs of packing or encryption, a common way malware authors hide the real payload from anything scanning the file at rest.
+Record what the sample actually does:
 
-**Imported API calls**: what a file imports says a lot about what it can do. Network functions, registry-writing calls, process injection functions — all of these point toward expected behavior before the file ever runs.
+- Files and directories created, modified, or removed.
+- Registry changes, services, scheduled tasks, and other persistence mechanisms.
+- Process creation, child processes, privilege changes, and security-tool interference.
+- DNS requests and network connections, including timestamps and destinations.
+- Attempts to detect a debugger, virtual machine, or analysis environment.
 
-### Dynamic Analysis
+A sandbox run that shows no suspicious activity does not prove a sample is safe; behavior may depend on time, configuration, user activity, or unavailable infrastructure.
 
-Running the file in an isolated sandbox and watching what happens.
+## Writing Detection Content
 
-File activity: what gets created, modified, or deleted, and where — system folders and startup folders matter most. Registry activity on Windows: autorun keys, security tools getting disabled, settings changing. Network activity: outbound connections, which addresses and domains it talks to, and whether the pattern looks periodic, one-shot, or like it's waiting for an instruction. Persistence: how it survives a reboot — scheduled tasks, services, startup keys. Evasion: whether it checks for analysis tools or a virtual environment before doing anything, or just delays execution to dodge automated scanning.
+Detection content should be based on indicators observed during analysis. Mark examples as illustrative, test them against both known-positive and known-negative samples, and document expected false positives. Do not deploy a rule solely because it appears in this guide.
 
-## Producing Machine-Usable Output
+### YARA example
 
-A written description of indicators is useful for a person reading it, but a detection signature or a structured record is what actually plugs into a SIEM or an endpoint tool. Once the analysis has turned up concrete indicators, produce both of these.
+This rule is a template. Replace the example string with a stable, distinctive string actually observed in the sample. The `.invalid` domain is reserved for examples and is not a real indicator.
 
-A YARA rule, built from whatever's distinctive about the file — specific strings, byte sequences, or a combination with size or a hash. Keep it tight enough that it won't flag unrelated files:
-
-```
-rule suspicious_file_example
+```yara
+rule example_observed_string_only
 {
     meta:
-        description = "Detects sample based on observed strings and PE characteristics"
-        date = "2026-10-09"
+        description = "Illustrative template; replace with a validated sample-specific indicator"
+        reference = "Documentation example only"
 
     strings:
-        $s1 = "observed-c2-domain-or-string" ascii
-        $s2 = { 4D 5A 90 00 }  // example byte pattern, e.g. MZ header offset marker
+        $observed = "sample-marker.example.invalid" ascii wide nocase
 
     condition:
-        uint16(0) == 0x5A4D and $s1 and $s2
+        $observed
 }
 ```
 
-Swap in whatever was actually observed during analysis. Never make up an indicator that wasn't actually seen in the sample.
+The string above is deliberately not a useful production signature. A generic file header such as `MZ` is not distinctive enough on its own. Before deployment, run the rule against a representative benign corpus, relevant known-positive samples, and the expected scanning locations. Review performance and false-positive rates.
 
-And a structured IOC record, STIX/TAXII-style:
+### STIX 2.1 indicator example
+
+The following is a structurally complete STIX 2.1 Indicator object for documentation purposes only. Its all-zero hash is a dummy value, not a real IOC. Replace the ID, timestamps, hash, and description with verified case data before use. Keep separate indicators for unrelated observables unless the relationship between them is supported by evidence.
 
 ```json
 {
   "type": "indicator",
-  "pattern": "[file:hashes.'SHA-256' = 'actual-sha256-hash-here']",
+  "spec_version": "2.1",
+  "id": "indicator--11111111-1111-4111-8111-111111111111",
+  "created": "2026-10-09T00:00:00Z",
+  "modified": "2026-10-09T00:00:00Z",
+  "name": "Documentation example - replace before use",
+  "description": "Illustrative object only; not a verified indicator.",
   "indicator_types": ["malicious-activity"],
-  "labels": ["c2", "persistence"],
-  "valid_from": "2026-10-09T00:00:00Z",
-  "description": "Observed beaconing to <IP/domain> at fixed interval, persistence via scheduled task"
+  "pattern": "[file:hashes.'SHA-256' = '0000000000000000000000000000000000000000000000000000000000000000']",
+  "pattern_type": "stix",
+  "valid_from": "2026-10-09T00:00:00Z"
 }
 ```
 
-Fill this in with the real hash, IP, domain, and observed behavior — it's meant to be ingested by a SIEM or threat intel platform, so accuracy beats completeness. Leave a field out rather than padding it with a placeholder.
+Use a STIX 2.1 validator and the receiving platform's schema checks before ingesting generated objects. Do not label an indicator as malicious unless the evidence supports that label. Follow the organization's data-sharing and marking rules when exporting threat intelligence.
 
-## Gathering Evidence After an Incident
+## Evidence Handling After an Incident
 
-1. Preserve state before touching anything else: a memory dump and a disk image where that's possible, before anyone restarts or cleans an affected machine.
-2. Build a timeline — when the suspicious activity first showed up, and what happened right before and right after.
-3. Work out the likely initial entry point: an email, a link, a vulnerability in an exposed service, stolen credentials.
-4. Scope the impact: which other machines or accounts touched the affected system or show the same indicators.
-5. Pull together indicators of compromise — hashes, IPs, domains, file paths, registry keys — to check for other infections elsewhere.
+1. Follow the incident-response plan and preserve evidence before making changes when doing so will not prolong active harm. Capture relevant logs, volatile data, and disk images where authorized and feasible.
+2. Record a timeline with time zones and note the source of each timestamp.
+3. Identify plausible entry points, but distinguish confirmed evidence from hypotheses.
+4. Determine scope by checking related systems, accounts, identities, and indicators.
+5. Preserve hashes, paths, domains, IP addresses, task names, and other relevant indicators with provenance and collection time.
+6. Maintain chain-of-custody records where evidence may be used for legal, regulatory, or disciplinary purposes.
 
-## When Explaining This to a User
+Containment may need to happen before complete collection when active damage is ongoing. Explain the trade-off and follow the organization's incident lead rather than delaying urgent containment for ideal evidence collection.
 
-Classify what was observed — data theft, persistence, lateral movement, ransomware — and lay out the indicators that led to that call. Containment comes first in whatever you suggest: isolate the machine, rotate affected credentials, block the indicators on the network, before anything permanent.
+## Reporting
+
+State the observed behavior, the evidence supporting the assessment, the confidence level, and what remains unknown. Recommend proportionate containment and validation steps. Do not treat an indicator match as conclusive attribution or proof that every host with the same indicator is compromised.
+
+Map behavior to MITRE ATT&CK only when the observed behavior fits a technique. A suspicious file or a hash match alone is not enough to claim a specific adversary technique. Use CVSS only when assessing a specific vulnerability and when the required context is available; it is not a general malware severity score.
 
 ## Worked Examples
 
-**Input**: A workstation log shows an unfamiliar executable in `%AppData%` creating a scheduled task that runs at every login, followed by outbound connections to an IP address every 60 seconds.
+**Input:** Endpoint telemetry shows an unfamiliar executable under a user's profile creating a logon-triggered scheduled task, followed by outbound connections to the same external address at roughly 60-second intervals.
 
-**Analysis**: A scheduled task tied to login is a standard persistence move — it survives a reboot and needs nothing from the user to fire again. The fixed 60-second outbound connection fits a command-and-control beacon checking in, not normal application traffic, which tends to be bursty rather than metronomic. Together, these two point to malware with C2 already established on the host, not a one-off infection that's run its course.
+**Analysis:** The scheduled task is evidence of persistence, and the repeated outbound connections may indicate beaconing. Neither observation alone proves command-and-control; confirm the process-to-connection relationship, destination reputation, and surrounding activity. Preserve the executable and relevant telemetry before cleanup if incident procedures permit.
 
-**Output**: Classification: likely C2-beaconing malware with persistence through a scheduled task. ATT&CK: T1053 (Scheduled Task/Job) for persistence, T1071 (Application Layer Protocol) for the C2 channel. Immediate steps: isolate the host to cut the C2 connection, grab a memory image before touching anything else, and pull the executable's hash plus the destination IP to check against other machines. Leave the scheduled task and the file in place for now — they're evidence before they're cleanup.
-
-```json
-{
-  "type": "indicator",
-  "pattern": "[file:hashes.'SHA-256' = '<hash-of-the-executable>'] AND [network-traffic:dst_ref.value = '<observed-ip>']",
-  "indicator_types": ["malicious-activity"],
-  "labels": ["c2", "persistence"],
-  "description": "Scheduled-task persistence with periodic beaconing to a fixed external IP"
-}
-```
+**Output:** Assessment: suspicious activity with possible scheduled-task persistence and periodic outbound communication. Confidence: moderate pending process and destination validation. Immediate actions: isolate the host if active compromise is reasonably suspected, preserve relevant evidence, identify the executable's SHA-256 hash, and check for related activity elsewhere. ATT&CK: T1053.005 (Scheduled Task) is a candidate mapping if the task's persistence role is confirmed; map the network behavior only after confirming its purpose. Do not infer an ATT&CK technique from timing alone.
 
 ---
 
-**Input**: Antivirus flags a file as unknown, no signature match. Static analysis shows the PE header has an unusually high-entropy section and almost no readable strings for a file of that size.
+**Input:** Antivirus reports no detections for an unknown executable. Static inspection finds a high-entropy PE section and very few readable strings.
 
-**Analysis**: High entropy paired with barely any readable strings is a solid packing or encryption signal — the actual code and strings are compressed or encrypted and only unpack at runtime, which is exactly why a signature scanner came up empty. That alone doesn't prove the file is malicious, but it's enough reason to move to a sandbox rather than clear it on the strength of a clean AV scan.
+**Analysis:** Those properties can be consistent with packing or encryption, but can also occur in legitimate software. A clean antivirus result and high entropy are both inconclusive on their own.
 
-**Output**: Classification: inconclusive from static analysis alone, but packed or encrypted in a way that's consistent with evasion. Next step: detonate it in an isolated sandbox and watch the runtime file, registry, and network behavior instead of trusting the static result. "No detections" on a packed binary isn't a clean bill of health; it's a reason to dig further.
+**Output:** Assessment: unresolved; additional analysis is warranted. Next step: inspect signing and provenance, compare metadata with a trusted release, and—if authorized—run the file in an isolated lab with controlled networking. Do not describe the file as malware unless additional evidence supports that conclusion.
 
 ---
 
-**Input**: Post-incident review of a ransomware case. Files across a shared drive got encrypted overnight. The only account active during that window was a service account that normally just runs a nightly backup job.
+**Input:** A shared drive was encrypted overnight. Audit logs show a service account used outside its normal backup activity during the same period.
 
-**Analysis**: A service account acting outside its normal job — encrypting files instead of running a backup — points to compromised credentials being used directly, not malware independently escalating privileges on its own. The timing lines up with the backup job's usual schedule, which suggests the attacker either knew the schedule going in or rode the account's existing access window to avoid tripping any anomaly alert tied to odd login times.
+**Analysis:** The account's unusual activity is relevant, but logs alone may not establish whether its credentials were stolen, whether malware used the account, or whether the account was the initial entry point.
 
-**Output**: Classification: ransomware deployed through a compromised service account, not a privilege escalation exploit. Immediate steps: disable the account's credentials, figure out how they were obtained — exposed secrets, phishing against whoever manages the account, reused passwords — and check whether the same credentials open any other doors before rebuilding from backup.
+**Output:** Assessment: suspected ransomware incident with anomalous service-account use. Contain affected systems, disable or rotate the account through the incident process, preserve relevant logs, and check for other persistence and compromised identities before recovery. Restore only from backups confirmed to predate the compromise, and validate the environment before returning it to service.

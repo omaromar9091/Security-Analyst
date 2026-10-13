@@ -2,7 +2,7 @@
 
 Use this file before vulnerability or threat analysis, when the task starts with raw scan output — Nmap, Shodan, Sublist3r, or similar — or open-source information gathering, and the goal is mapping an attack surface before deciding what to look at more closely.
 
-This assumes the reconnaissance itself is already authorized: a penetration test engagement, a bug bounty scope, or an organization checking its own exposure. It covers reading and prioritizing recon output, not scanning a target without permission to do so.
+This assumes the activity is authorized and within a defined scope, such as an approved penetration test, a bug bounty program, or an organization reviewing its own exposure. Check scope and rules of engagement before follow-up testing. This guide focuses on interpreting and prioritizing results, not on scanning third-party systems without permission.
 
 ## Reading Scan Output
 
@@ -30,7 +30,7 @@ Naming patterns like dev-, test-, old-, or internal- are a fast way to triage wh
 
 Job postings, LinkedIn profiles, and public documentation often leak internal tool names, team structure, and tech stack — all of it useful for building a more convincing social engineering pretext later (see `references/social-engineering.md`).
 
-Public breach dumps and paste sites can turn up credentials leaked under an organization's domain. Even an old leak matters, since password reuse is common enough to make it worth checking.
+Public reporting and reputable breach-notification services may indicate that organizational credentials were exposed. Do not download or redistribute raw credential dumps, and never test exposed credentials against live services. Treat a reported exposure as a lead: notify the authorized security owner, use approved breach-monitoring channels, and arrange password resets, session revocation, and MFA review through the normal incident process.
 
 Metadata buried in public documents — author names, software versions, internal file paths — can say more about internal infrastructure than the document's actual content does.
 
@@ -38,7 +38,7 @@ Metadata buried in public documents — author names, software versions, interna
 
 1. Group what was found by exposure type: unauthenticated access, outdated software, unexpected reachability, leaked credentials, human-layer intelligence.
 2. Rank by a rough cost-versus-impact estimate, not by how interesting something looks. An unauthenticated admin panel on a low-value internal tool can matter less than a slightly outdated library on a system that touches customer data.
-3. Call out anything that's already a finding on its own, no chained exploitation needed — an exposed database, leaked credentials, a management interface sitting on the internet.
+3. Separate confirmed exposures from leads that need verification. An internet-exposed database may be a finding on its own; a third-party report of leaked credentials needs careful validation and incident handling, not credential testing.
 4. Hand the prioritized list to `references/vulnerability-analysis.md` or `references/threat-analysis.md` depending on whether the next step is code and configuration, or something already running.
 
 ## When Explaining This to a User
