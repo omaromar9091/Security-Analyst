@@ -1,65 +1,79 @@
-<img src="banner.svg" alt="Security Analyst Skill" width="100%">
+<img src="banner.svg" alt="Security Analyst" width="100%">
 
-# Security Analyst Skill
+# Security Analyst
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-E8A33D.svg)](LICENSE)
 [![Framework agnostic](https://img.shields.io/badge/framework-agnostic-3E6B89.svg)](SKILL.md)
-[![Domains](https://img.shields.io/badge/domains-6-141C26.svg)](SKILL.md)
+[![Analysis domains](https://img.shields.io/badge/analysis%20domains-6-141C26.svg)](SKILL.md)
 
+Security Analyst is a reference-driven skill for AI assistants doing defensive cybersecurity work. It covers six analysis domains and provides a consistent way to route a request, assess the available evidence, describe risk, and recommend practical next steps. It is designed to support an analyst's judgment, not replace testing or turn uncertain observations into confirmed findings.
 
-A structured cybersecurity analysis skill for any AI model or agent. It gives an agent a methodology instead of just an opinion — six domains, each one grounded in how that work actually gets done in practice, with routing logic that decides which domain applies before any analysis starts.
+## What it covers
 
-## Why This Exists
+| Domain | Typical use cases | Guide |
+| --- | --- | --- |
+| **Reconnaissance and OSINT** | Interpret authorized scan results, map exposed assets, prioritize public-facing services, and handle public-source intelligence carefully. | [`references/reconnaissance.md`](references/reconnaissance.md) |
+| **Vulnerability analysis** | Review application code and architecture, examine known weaknesses, and triage crashes or potential exploitability. | [`references/vulnerability-analysis.md`](references/vulnerability-analysis.md) |
+| **AI-generated code review** | Look for missing controls, unsafe defaults, questionable dependencies, hardcoded secrets, and prompt-injection risks in AI-assisted code. | [`references/ai-generated-code.md`](references/ai-generated-code.md) |
+| **Threat and binary analysis** | Assess suspicious files and activity, organize incident evidence, and draft candidate detection indicators. | [`references/threat-analysis.md`](references/threat-analysis.md) |
+| **Social-engineering assessment** | Evaluate phishing, vishing, pretexting, business email compromise, and authorized awareness exercises. | [`references/social-engineering.md`](references/social-engineering.md) |
+| **Defense and remediation** | Prioritize fixes, plan containment and recovery, improve hardening, and review privacy and data-handling practices. | [`references/remediation.md`](references/remediation.md) |
 
-Most AI agents asked a security question jump straight to an answer, skipping the part where a real analyst figures out what kind of problem they're even looking at first. This skill forces that step. Reconnaissance data gets read differently from a crash dump. A phishing email gets read differently from a SQL injection. And code written by another AI tool gets a review pass built for the specific ways that code tends to fail — a growing blind spot as more production code starts out as an AI-generated first draft.
+## How it works
 
-## The Six Domains
+1. **Route the request.** Choose the reference that matches the evidence and the decision that needs to be made. Consult more than one guide when a case spans domains.
+2. **Assess the evidence.** Separate observed facts from interpretation and assumptions. Identify what is known, what remains uncertain, and what evidence would resolve the uncertainty.
+3. **Explain the risk.** Describe the realistic impact and relevant preconditions rather than relying on a vulnerability label alone.
+4. **Recommend a fix.** Give concrete remediation steps and a way to verify the result. Call out operational side effects when they matter.
+5. **Classify only when justified.** Use CWE for supported software weaknesses, MITRE ATT&CK for adversary behavior that actually fits a technique, and CVSS when enough context is available to assess a specific vulnerability. Do not force a mapping or invent a score to make a report look complete.
 
-| # | Domain | Catches | Reference file |
-| :--- | :--- | :--- | :--- |
-| 0 | **Reconnaissance & OSINT** | Attack surface buried in Nmap/Shodan/Sublist3r output, exposed infra, leaked org intel | `references/reconnaissance.md` |
-| 1 | **Vulnerability & Exploit Logic** | Memory corruption, injection, broken access control, and exploitability triage straight from a crash dump or assembly snippet | `references/vulnerability-analysis.md` |
-| 1b | **AI-Generated Code Review** | Hallucinated packages (slopsquatting), omitted security controls, overly permissive defaults — failure modes specific to AI-written code | `references/ai-generated-code.md` |
-| 2 | **Threat & Binary Analysis** | Malware classification, persistence and C2 behavior, with output as ready-to-use YARA rules and STIX-style IOC records | `references/threat-analysis.md` |
-| 3 | **Human & Attack Vectors** | Phishing, vishing, pretexting, BEC — read by the psychological lever being pulled, not just the surface red flags | `references/social-engineering.md` |
-| 4 | **Defense & Countermeasures** | Patch prioritization, breach remediation, and an OPSEC/data-handling review for privacy-sensitive apps | `references/remediation.md` |
+The reference guides include worked examples to illustrate the expected reasoning and level of detail. Their indicators, severity descriptions, and snippets are examples—not validated detections or substitutes for testing in the target environment.
 
-Every finding that maps to a real vulnerability or observed behavior gets tagged against **MITRE ATT&CK** and scored with a **CVSS v3.1** estimate, so the output reads like something a security team can actually act on, not a generic writeup. Every reference file closes with worked examples in an input → analysis → output shape, so an agent using this skill sees exactly what the expected depth and tone look like, not just a list of rules to paraphrase.
+## Use the skill
 
-## Usage
+The repository contains a `SKILL.md` entry point and supporting material in `references/`.
 
-Works with anything that supports the general idea of "skills" or tool/function calling.
+- **Skill-compatible assistants:** Install or add the complete project directory according to the skill mechanism supported by your assistant. Keep `SKILL.md` and the `references/` directory together so the routing instructions can resolve the linked guides.
+- **Other agent frameworks:** Adapt the routing and reference material to your framework. `SKILL.md` includes a framework-neutral function schema that can be used as a starting point; it is not a ready-made integration or an executable security scanner.
+- **Manual use:** Open the relevant reference and follow its checklist, evidence standards, and remediation guidance.
 
-**Claude** — drop the whole `security-analyst/` folder into the skills directory for the project or account.
+No particular model, agent framework, scanner, sandbox, or threat-intelligence service is bundled with this repository. Any external tool must be configured and used separately, within an authorized scope.
 
-**Any other agent framework** — LangChain, Semantic Kernel, MCP, or a direct integration — use the tool definition in `SKILL.md` under "Tool Definition," and feed the `references/` files in as context or system instructions.
+## Repository layout
 
-## What a Response Actually Looks Like
-
-A short excerpt from `references/vulnerability-analysis.md`, showing the expected shape:
-
-> **Input**: A login endpoint builds its query as `"SELECT * FROM users WHERE username = '" + user_input + "'"` and passes it straight to the database.
->
-> **Output**: Vulnerability: SQL injection in the login query through the unsanitized `username` field. Fix: swap the string concatenation for a parameterized query... Classification: CWE-89, ATT&CK T1190 (Exploit Public-Facing Application). CVSS v3.1 read: network, low complexity, no privileges or user interaction needed, high confidentiality and integrity impact. **Critical.**
-
-## File Structure
-
+```text
+Security-Analyst/
+├── SKILL.md
+├── README.md
+├── LICENSE
+├── banner.svg
+├── references/
+│   ├── reconnaissance.md
+│   ├── vulnerability-analysis.md
+│   ├── ai-generated-code.md
+│   ├── threat-analysis.md
+│   ├── social-engineering.md
+│   └── remediation.md
+└── tests/
+    └── test_docs.py
 ```
-security-analyst/
-├── SKILL.md                          # Overview, routing logic, classification standards, tool definition
-└── references/
-    ├── reconnaissance.md             # OSINT and attack-surface mapping (Nmap/Shodan/Sublist3r)
-    ├── vulnerability-analysis.md     # Code vulnerabilities, exploit logic, crash/assembly triage
-    ├── ai-generated-code.md          # Review patterns specific to AI-written/AI-assisted code
-    ├── threat-analysis.md            # Suspicious file/behavior analysis, forensics, YARA/IOC output
-    ├── social-engineering.md         # Social engineering and phishing assessment
-    └── remediation.md                # Patching, defense, operational security, OPSEC data-handling review
+
+## Scope and responsible use
+
+Use this material for defensive analysis, systems you own, or assessments you are explicitly authorized to conduct. It does not grant permission to scan or test third-party systems. Suspicious files should be examined in an isolated lab, and sensitive samples or credentials should not be sent to public services without approval. The skill is designed to explain risks and support safe validation; it is not intended to generate deployable malware or working exploit chains against real targets.
+
+AI-assisted analysis can miss issues or misinterpret evidence. Validate important findings with the relevant source material, tools, and qualified reviewers before making high-impact decisions.
+
+## Validation
+
+The documentation checks use Python's standard library and require no third-party packages:
+
+```bash
+python -m unittest discover -s tests -v
 ```
 
-## Scope
-
-Built to support a security decision: reviewing code, classifying a threat, spotting social engineering, planning remediation. It is not a tool for generating ready-to-use exploits or malware, and it says no to that explicitly rather than quietly complying — the boundaries are laid out in `SKILL.md` and apply no matter how a request is framed.
+These checks validate repository consistency and example formatting. They do not prove that a security conclusion, YARA rule, STIX indicator, or remediation is correct for a real environment.
 
 ## License
 
-MIT License, see `LICENSE`.
+This project is distributed under the MIT License. See [`LICENSE`](LICENSE).
