@@ -1,0 +1,58 @@
+<svg width="1200" height="320" viewBox="0 0 1200 320" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Security Analyst Skill</title>
+  <desc>A cybersecurity analysis skill for any AI model or agent. Six domains, routed by task, scored against MITRE ATT&amp;CK and CVSS v3.1.</desc>
+  <defs>
+    <radialGradient id="glow" cx="72%" cy="52%" r="48%">
+      <stop offset="0%" stop-color="#1B3A54" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#0B1220" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="320" fill="#0B1220"/>
+  <rect width="1200" height="320" fill="url(#glow)"/>
+
+  <!-- routing diagram: one hub (the routing decision), six domain nodes -->
+  <g stroke="#3E6B89" stroke-width="1.5" opacity="0.85">
+    <line x1="860" y1="160" x2="893.6" y2="34.4"/>
+    <line x1="860" y1="160" x2="951.9" y2="68.1"/>
+    <line x1="860" y1="160" x2="985.6" y2="126.4"/>
+    <line x1="860" y1="160" x2="985.6" y2="193.6"/>
+    <line x1="860" y1="160" x2="951.9" y2="251.9"/>
+    <line x1="860" y1="160" x2="893.6" y2="285.6"/>
+  </g>
+
+  <circle cx="860" cy="160" r="11" fill="#E8A33D"/>
+
+  <g fill="#141C26" stroke="#E8A33D" stroke-width="2">
+    <circle cx="893.6" cy="34.4" r="8"/>
+    <circle cx="951.9" cy="68.1" r="8"/>
+    <circle cx="985.6" cy="126.4" r="8"/>
+    <circle cx="985.6" cy="193.6" r="8"/>
+    <circle cx="951.9" cy="251.9" r="8"/>
+    <circle cx="893.6" cy="285.6" r="8"/>
+  </g>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" fill="#9FB3C8">
+    <text x="910" y="38">recon</text>
+    <text x="968" y="72">vuln</text>
+    <text x="1002" y="130">ai-code</text>
+    <text x="1002" y="198">threat</text>
+    <text x="968" y="256">social</text>
+    <text x="910" y="290">defense</text>
+  </g>
+
+  <!-- left column: identity -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#7E93A7" font-size="15">
+    <text x="70" y="70">$ security-analyst --domains 6</text>
+  </g>
+
+  <text x="70" y="146" font-family="Helvetica, Arial, sans-serif" font-weight="700" font-size="56" letter-spacing="-1" fill="#F1EFE8">Security Analyst</text>
+
+  <g font-family="Helvetica, Arial, sans-serif" font-weight="400" font-size="19" fill="#B7C2CC">
+    <text x="70" y="190">A cybersecurity analysis skill for any AI model</text>
+    <text x="70" y="216">or agent. Six domains, routed by task, scored</text>
+    <text x="70" y="242">against MITRE ATT&amp;CK and CVSS v3.1.</text>
+  </g>
+
+  <text x="70" y="284" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" fill="#6B7A8A">MIT licensed. Works with Claude, MCP, LangChain, or any agent framework.</text>
+</svg>

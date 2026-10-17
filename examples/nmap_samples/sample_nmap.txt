@@ -1,0 +1,7 @@
+# Nmap sample output (trimmed)
+
+Host: 203.0.113.12
+Open ports:
+- 22/tcp ssh
+- 80/tcp http
+- 3306/tcp mysql
