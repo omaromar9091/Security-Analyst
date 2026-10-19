@@ -27,7 +27,7 @@ dependencies = []
 
 [project.optional-dependencies]
 dev = [
-    "jsonschema==4.23.0",
+    "jsonschema==4.26.0",
     "bandit==1.8.3",
     "pip-audit==2.8.0",
     "pylint==3.3.1"
