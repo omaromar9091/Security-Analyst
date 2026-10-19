@@ -1,0 +1,17 @@
+# CODEOWNERS
+# Each line maps a path pattern to the GitHub username(s) responsible for review.
+# The last matching rule for a file wins.
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything
+*                           @omaromar9091
+
+# Reference files — any change to methodology needs careful review
+references/                 @omaromar9091
+
+# Schema changes affect all downstream consumers
+schemas/                    @omaromar9091
+
+# CI and security tooling
+.github/                    @omaromar9091
+tooling/                    @omaromar9091

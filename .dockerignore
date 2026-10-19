@@ -1,0 +1,41 @@
+# Version control
+.git
+.gitignore
+
+# Virtual environments and caches
+.venv
+venv
+env
+__pycache__
+*.py[cod]
+*.pyo
+
+# Secrets and local config
+.env
+*.env
+*.key
+*.pem
+*.p12
+*.pfx
+secrets.yaml
+secrets.json
+
+# Test and coverage artifacts
+.pytest_cache
+.coverage
+coverage.xml
+htmlcov
+bandit-report.json
+pip-audit-report.json
+
+# Editor and OS noise
+.idea
+.vscode
+*.swp
+*.swo
+.DS_Store
+
+# Build artifacts
+dist
+build
+*.egg-info

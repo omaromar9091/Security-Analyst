@@ -1,0 +1,13 @@
+{
+  "id": "F-2026-0001",
+  "title": "Internet-exposed MySQL instance",
+  "analysis_domain": "reconnaissance",
+  "evidence": "Nmap-like sample shows port 3306 open on 203.0.113.12",
+  "impact": "Database reachable from the internet can lead to data exposure",
+  "confidence": "high",
+  "cwe": [],
+  "mitre_attck": [],
+  "cvss": "",
+  "remediation": "Restrict access to internal network or VPN; apply firewall rules",
+  "verification_steps": ["Confirm port is closed from the internet", "Confirm internal app connectivity"]
+}

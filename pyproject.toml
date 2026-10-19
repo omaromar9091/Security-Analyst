@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "security-analyst"
+version = "1.0.0"
+description = "A cybersecurity analysis skill for any AI model or agent — seven domains, routed by task, scored against MITRE ATT&CK and CVSS v3.1."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+authors = [{ name = "Lotfy" }]
+keywords = ["cybersecurity", "security", "ai", "analysis", "mitre", "cvss", "load-testing"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Information Technology",
+    "Topic :: Security",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+]
+# This package is a knowledge/skill repository, not a runtime library.
+# There are no install-time dependencies — the tooling scripts use the
+# standard library only (urllib, hashlib, pathlib, argparse, json).
+# Development and CI dependencies are in requirements-dev.txt and [project.optional-dependencies].
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "jsonschema==4.23.0",
+    "bandit==1.8.3",
+    "pip-audit==2.8.0",
+    "pylint==3.3.1"
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+skips = []
+
+[tool.pylint.messages_control]
+disable = [
+    "missing-module-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "invalid-name",
+    "too-few-public-methods",
+    "broad-exception-caught",
+    "duplicate-code",
+]
+
+[tool.pylint.reports]
+output-format = "text"
