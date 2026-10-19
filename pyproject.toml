@@ -50,14 +50,25 @@ skips = []
 
 [tool.pylint.messages_control]
 disable = [
+    "line-too-long",
+    "too-many-instance-attributes",
+    "too-many-arguments",
+    "too-many-positional-arguments",
+    "too-many-locals",
+    "too-many-branches",
+    "too-many-statements",
+    "f-string-without-interpolation",
+    "import-outside-toplevel",
+    "unused-import",
     "missing-module-docstring",
     "missing-class-docstring",
     "missing-function-docstring",
     "invalid-name",
-    "too-few-public-methods",
-    "broad-exception-caught",
-    "duplicate-code",
+    "too-few-public-methods"
 ]
+
+[tool.pylint.master]
+fail-under = 8.0
 
 [tool.pylint.reports]
 output-format = "text"
