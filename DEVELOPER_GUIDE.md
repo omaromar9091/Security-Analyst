@@ -7,6 +7,8 @@ This guide is for anyone who wants to modify, extend, or debug the Security-Anal
 ```
 Security-Analyst/
 ├── SKILL.md                    routing logic, tool definition, scope boundaries
+├── README.md                   user-facing quick start and reference
+├── banner.svg                  README header image
 ├── references/                 one file per analysis domain — this is the core content
 ├── schemas/
 │   └── finding.schema.json     JSON Schema (draft-07) for structured output
@@ -14,20 +16,36 @@ Security-Analyst/
 │   ├── finding_template.md     blank finding to fill in
 │   └── remediation_checklist.md
 ├── examples/
+│   ├── README.md                explains the sample files below
 │   ├── finding_example.json    a valid, schema-passing finding
+│   ├── load_test_example.json  a valid, schema-passing load test finding
 │   └── nmap_samples/           raw scan output used in tests
 ├── tooling/
 │   ├── compute_hash.py         SHA-256 a file
 │   ├── validate_stix.py        parse/validate a STIX 2.1 JSON file
-│   └── run_yara_tests.sh       run .yar rules against examples/ (needs yara)
+│   ├── run_yara_tests.sh       run .yar rules against examples/ (needs yara)
+│   └── load_test.py            HTTP load tester — baseline, load, stress, spike, soak
 ├── analysis-docker/
 │   └── Dockerfile              isolated Python 3.11-slim environment
 ├── tests/
 │   ├── test_docs.py            structure and content checks (8 tests)
 │   └── test_schema.py          JSON Schema validation (needs jsonschema)
-├── pyproject.toml              build metadata, tool config (black, bandit)
+├── .github/
+│   ├── workflows/
+│   │   ├── ci.yml               unit tests, bandit, pip-audit on every PR
+│   │   └── pylint.yml           pylint on every push
+│   ├── ISSUE_TEMPLATE/
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   ├── CODEOWNERS
+│   └── dependabot.yml
+├── CONTRIBUTING.md             how to propose changes
+├── CODE_OF_CONDUCT.md
+├── SECURITY.md                  how to report a vulnerability in this repo
+├── LICENSE
+├── pyproject.toml              build metadata, tool config (black, bandit, pylint)
 ├── requirements-dev.txt        pinned dev dependencies
 ├── .editorconfig               editor formatting rules
+├── .dockerignore
 └── .gitignore
 ```
 
@@ -68,17 +86,20 @@ bandit -r tooling/ -f txt
 
 # Dependency audit — check for known CVEs
 pip-audit -r requirements-dev.txt
+
+# Lint — needs `pip install -e .[dev]`
+pylint tooling/ tests/ --errors-only
 ```
 
-All three should pass before you open a pull request.
+All four should pass before you open a pull request. The first three run in `ci.yml` on every PR; pylint runs in `pylint.yml` on every push.
 
 ## Adding a new reference file
 
 1. Create `references/<domain>.md`. Model it on an existing file — each one has an introduction, a classification section (MITRE ATT&CK + CVSS guidance), and worked examples in input → analysis → output shape.
 2. Add a row to the domain table in `SKILL.md` under `## Analysis Domains`.
-3. Add a row to the domain table in `README.md` under `## What it covers`.
+3. Add a row to the domain table in `README.md` under `## Domains`.
 4. Update `SKILL.md`'s routing section to describe when to open the new file.
-5. Run the tests — `test_domain_tables_match_six_references` will fail if the count is off.
+5. Run the tests — `test_domain_tables_match_seven_references` will fail if the count is off.
 
 ## Adding a tooling script
 
