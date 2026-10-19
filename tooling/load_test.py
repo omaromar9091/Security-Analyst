@@ -189,7 +189,7 @@ def _send_request(
         req.add_header(k, v)
 
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310
             status = resp.status
             resp.read()  # drain the body so the connection can be reused
     except urllib.error.HTTPError as exc:
