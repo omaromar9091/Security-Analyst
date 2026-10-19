@@ -1,0 +1,4 @@
+# Development and CI dependencies — pinned for reproducibility
+jsonschema==4.23.0
+bandit==1.8.3
+pip-audit==2.8.0

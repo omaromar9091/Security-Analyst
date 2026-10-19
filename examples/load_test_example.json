@@ -1,0 +1,18 @@
+{
+  "id": "LT-2026-0001",
+  "title": "Database connection pool exhaustion at 30 concurrent users",
+  "analysis_domain": "load_testing",
+  "evidence": "P95 latency rose from 180 ms to 4,200 ms as concurrent users exceeded 30. Pool size is 10; all 10 connections were in use at the inflection point. HTTP 504 error rate 0.8% at 50 concurrent users. CPU 45%, memory stable — server resources not constrained.",
+  "impact": "Any traffic spike above ~25 concurrent active searches will cause visible latency degradation and a proportion of timeouts. Current peak production traffic estimate would cause widespread user-facing errors.",
+  "confidence": "high",
+  "cwe": [],
+  "mitre_attck": [],
+  "cvss": "",
+  "remediation": "Increase database connection pool size to 50. Add a read replica and route search queries there to separate read load from write load. Set a connection acquire timeout of 2 seconds and return a 503 with Retry-After rather than queuing indefinitely.",
+  "verification_steps": [
+    "Re-run the 50-user load test after pool size increase",
+    "Confirm P95 latency stays below 500 ms at 50 concurrent users",
+    "Confirm error rate drops below 0.1%",
+    "Verify pool utilization metric is visible in monitoring dashboard"
+  ]
+}
