@@ -172,9 +172,10 @@ Security-Analyst/
 python -m unittest discover -s tests -v   # unit tests
 bandit -r tooling/ -f txt -ll             # static security analysis
 pip-audit -r requirements-dev.txt         # dependency CVE check
+pylint tooling/ tests/ --errors-only      # lint (pip install -e .[dev])
 ```
 
-All three run automatically on every PR via GitHub Actions.
+All four run automatically via GitHub Actions — tests, bandit, and pip-audit on every pull request (`ci.yml`), pylint on every push (`pylint.yml`).
 
 ---
 
