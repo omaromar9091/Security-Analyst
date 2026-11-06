@@ -1,6 +1,6 @@
 <svg width="1200" height="320" viewBox="0 0 1200 320" xmlns="http://www.w3.org/2000/svg" role="img">
   <title>Security Analyst Skill</title>
-  <desc>A cybersecurity analysis skill for any AI model or agent. Six domains, routed by task, scored against MITRE ATT&amp;CK and CVSS v3.1.</desc>
+  <desc>A cybersecurity analysis skill for any AI model or agent. Seven domains, routed by task, scored against MITRE ATT&amp;CK and CVSS v3.1.</desc>
   <defs>
     <radialGradient id="glow" cx="72%" cy="52%" r="48%">
       <stop offset="0%" stop-color="#1B3A54" stop-opacity="0.65"/>
