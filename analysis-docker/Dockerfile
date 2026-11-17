@@ -16,7 +16,7 @@
 
 # Pin to a specific digest for reproducibility and supply-chain safety.
 # To update: docker pull python:3.11-slim and replace the digest below.
-FROM python:3.12-slim@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
+FROM python:3.15-slim@sha256:65a65fc7b30b06cb6df4930fd4650697cb23f4c2698ab81fc87e4b031bc36928
 
 # Run as a non-root user to limit blast radius if a sample misbehaves
 RUN groupadd --gid 1001 analyst && \
